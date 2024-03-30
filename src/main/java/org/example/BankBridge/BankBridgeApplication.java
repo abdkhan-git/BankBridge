@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import org.example.BankBridge.database.FirebaseInitialize;
+
 import java.io.IOException;
 
 public class BankBridgeApplication extends Application {
@@ -15,6 +17,8 @@ public class BankBridgeApplication extends Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
+
+        FirebaseInitialize.initialize();
     }
 
     public static void main(String[] args) {
