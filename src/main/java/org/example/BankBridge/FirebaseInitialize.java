@@ -1,4 +1,4 @@
-package org.example.BankBridge.database;
+package org.example.BankBridge;
 
 import com.google.auth.oauth2.GoogleCredentials;
 
