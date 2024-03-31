@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
+    // Creating app scene
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Fxml/Login.fxml"));
