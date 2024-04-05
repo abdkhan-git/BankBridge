@@ -14,7 +14,7 @@
     -fx-font-family: "Calibri Light";
 }
 
-.section_line {
+.section_title {
     -fx-font-size: 1.4em;
     -fx-font-family: "Calibri Light";
 }
@@ -97,7 +97,7 @@
 }
 
 .expense_amount {
-    -fx-text-fill: #00308F;
+    -fx-text-fill: #FF0000;
     -fx-font-family: "Calibri Light";
     -fx-font-size: 1.5em;
 }
@@ -144,4 +144,8 @@
     -fx-font-size: 1.5em;
     -fx-font-family: "Calibri Light";
     -fx-text-fill: #FFFFFF;
+}
+
+.new_trans_container Button:hover {
+    -fx-cursor: hand;
 }
