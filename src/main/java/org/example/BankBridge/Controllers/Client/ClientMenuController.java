@@ -2,6 +2,7 @@ package org.example.BankBridge.Controllers.Client;
 
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import org.example.BankBridge.Models.Model;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,9 +16,21 @@ public class ClientMenuController implements Initializable {
     public Button reportBtn;
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle)
-    {
+    public void initialize(URL url, ResourceBundle resourceBundle){
+        addListeners();
+    }
 
+    private void addListeners() {
+        dashboardBtn.setOnAction(event -> onDashboard());
+        transactionBtn.setOnAction(event -> onTransactions());
+    }
+
+    private void onDashboard() {
+        Model.getInstance().getViewFactory().getClientSelectedMenuItem().set("Dashboard");
+    }
+
+    private void onTransactions() {
+        Model.getInstance().getViewFactory().getClientSelectedMenuItem().set("Transactions");
     }
 
 }
