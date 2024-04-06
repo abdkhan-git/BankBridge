@@ -1,4 +1,9 @@
 package org.example.BankBridge.Database.model;
 
-public class User {
+public record User(String firstName,
+                   String lastName,
+                   String email,
+                   String phoneNum,
+                   String password) {
+
 }
