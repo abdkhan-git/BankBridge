@@ -8,6 +8,7 @@ import com.google.firebase.FirebaseOptions;
 import java.io.FileInputStream;
 
 public class FirebaseInitialize {
+    // Initialization method for connecting Firebase
     public static void initialize() {
         try {
             FileInputStream serviceAccount = new FileInputStream("src/main/resources/org/example/BankBridge/key.json");
