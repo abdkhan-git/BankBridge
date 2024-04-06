@@ -1,4 +1,4 @@
-package org.example.BankBridge;
+package org.example.BankBridge.Database.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 
@@ -7,7 +7,7 @@ import com.google.firebase.FirebaseOptions;
 
 import java.io.FileInputStream;
 
-public class FirebaseInitialize {
+public class FirebaseConfig {
     // Initialization method for connecting Firebase
     public static void initialize() {
         try {
