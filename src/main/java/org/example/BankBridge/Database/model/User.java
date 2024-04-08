@@ -4,6 +4,7 @@ public record User(String firstName,
                    String lastName,
                    String email,
                    String phoneNum,
-                   String password) {
+                   String password,
+                   String accountType) {
 
 }
