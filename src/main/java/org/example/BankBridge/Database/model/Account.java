@@ -5,7 +5,7 @@ import java.util.Date;
 public record Account(String accountNumber,
                       String accountType,
                       double balance,
-                      Date dateCreated) {
+                      String dateCreated) {
 }
 
 
