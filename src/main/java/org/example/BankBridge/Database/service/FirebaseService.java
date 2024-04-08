@@ -38,17 +38,34 @@ public class FirebaseService {
     public void addNewUserToDb(User user, String uuid) {
         DocumentReference docRef = App.fstore.collection("users").document(UUID.randomUUID().toString());
 
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("account_type", "CLIENT");
-        userData.put("uuid", uuid);
-        userData.put("first_name", user.firstName());
-        userData.put("last_name", user.lastName());
-        userData.put("email", user.email());
-        userData.put("phone_num", user.phoneNum());
-        userData.put("password", user.password());
+        Map<String, Object> userData = dataMap(
+                "account_type", "CLIENT",
+                "uuid", uuid,
+                "first_name", user.firstName(),
+                "last_name", user.lastName(),
+                "email", user.email(),
+                "phone_num", user.phoneNum(),
+                "password", user.password()
+        );
 
         //asynchronously write data
         ApiFuture<WriteResult> result = docRef.set(userData);
+    }
+
+
+    // Helper method for easier insertion of data in the form of Map<String, Object>
+    private Map<String, Object> dataMap(Object... keyValuePairs) {
+        if (keyValuePairs.length % 2 != 0) {
+            throw new IllegalArgumentException("Invalid number of arguments. Must be key-value pairs.");
+        }
+
+        Map<String, Object> data = new HashMap<>();
+        for (int i = 0; i < keyValuePairs.length; i += 2) {
+            String key = String.valueOf(keyValuePairs[i]);
+            Object value = keyValuePairs[i + 1];
+            data.put(key, value);
+        }
+        return data;
     }
 
 
