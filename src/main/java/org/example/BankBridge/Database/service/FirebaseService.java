@@ -11,6 +11,7 @@ import org.example.BankBridge.App;
 import org.example.BankBridge.Database.model.Account;
 import org.example.BankBridge.Database.model.User;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -73,6 +74,7 @@ public class FirebaseService {
 
         ApiFuture<QuerySnapshot> future =  App.fstore.collection("users").get();
         List<QueryDocumentSnapshot> documents;
+
         try {
             documents = future.get().getDocuments();
             if(!documents.isEmpty()) {
@@ -90,11 +92,37 @@ public class FirebaseService {
             else {
                 System.out.println("No registered users found within database.");
             }
-        }
-        catch (InterruptedException | ExecutionException ex) {
-            System.out.println("Error occurred. Possibly due to AGE not being captured during registration.");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
         return listOfRegisteredUsers;
+    }
+
+    public List<Account> retrieveAllBankAccounts() {
+        List<Account> listOfAccounts = new ArrayList<>();
+
+        ApiFuture<QuerySnapshot> future =  App.fstore.collection("accounts").get();
+        List<QueryDocumentSnapshot> documents;
+
+        try {
+            documents = future.get().getDocuments();
+            if(!documents.isEmpty()) {
+                documents.stream()
+                        .map(document -> new Account(
+                                String.valueOf(document.get("account_number")),
+                                String.valueOf(document.get("account_type")),
+                                Double.parseDouble(String.valueOf(document.get("balance"))),
+                                String.valueOf(document.get("date_created"))
+                        ))
+                        .forEach(listOfAccounts::add);
+            }
+            else {
+                System.out.println("No bank accounts found within database.");
+            }
+        } catch (InterruptedException | ExecutionException ex) {
+            ex.printStackTrace();
+        }
+        return listOfAccounts;
     }
 
 
