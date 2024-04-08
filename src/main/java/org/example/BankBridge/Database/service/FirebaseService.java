@@ -35,4 +35,21 @@ public class FirebaseService {
         }
     }
 
+    public void addNewUserToDb(User user, String uuid) {
+        DocumentReference docRef = App.fstore.collection("users").document(UUID.randomUUID().toString());
+
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("account_type", "CLIENT");
+        userData.put("uuid", uuid);
+        userData.put("first_name", user.firstName());
+        userData.put("last_name", user.lastName());
+        userData.put("email", user.email());
+        userData.put("phone_num", user.phoneNum());
+        userData.put("password", user.password());
+
+        //asynchronously write data
+        ApiFuture<WriteResult> result = docRef.set(userData);
+    }
+
+
 }
