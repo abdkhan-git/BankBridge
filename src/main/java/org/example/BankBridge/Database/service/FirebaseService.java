@@ -6,6 +6,7 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import org.example.BankBridge.App;
+import org.example.BankBridge.Database.model.Account;
 import org.example.BankBridge.Database.model.User;
 
 import java.util.HashMap;
@@ -50,6 +51,20 @@ public class FirebaseService {
 
         //asynchronously write data
         ApiFuture<WriteResult> result = docRef.set(userData);
+    }
+
+    public void addNewBankAccountToDb(Account account) {
+        DocumentReference docRef = App.fstore.collection("accounts").document(UUID.randomUUID().toString());
+
+        Map<String, Object> accountData = dataMap(
+                "account_type", "CHECKING",
+                "account_number", account.accountNumber(),
+                "balance", account.balance(),
+                "date_created", account.dateCreated()
+        );
+
+        //asynchronously write data
+        ApiFuture<WriteResult> result = docRef.set(accountData);
     }
 
 
