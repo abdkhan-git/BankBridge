@@ -125,6 +125,32 @@ public class FirebaseService {
         return listOfAccounts;
     }
 
+    private String retrievePersonByUuidAndReturnPass(String uuid) {
+        //asynchronously retrieve all documents
+        ApiFuture<QuerySnapshot> future =  App.fstore.collection("users").get();
+        // future.get() blocks on response
+        List<QueryDocumentSnapshot> documents;
+        try
+        {
+            documents = future.get().getDocuments();
+            if(!documents.isEmpty()) {
+                System.out.println("Fetching data from firebase database..");
+                for (QueryDocumentSnapshot document : documents) {
+                    if (document.getData().get("uuid").equals(uuid)) {
+                        System.out.println("SUCCESS: Found person with corresponding UUID");
+                        return document.getData().get("password").toString();
+                    }
+                }
+            } else {
+                System.out.println("No data");
+            }
+        }
+        catch (InterruptedException | ExecutionException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
 
     // Helper method for easier insertion of data in the form of Map<String, Object>
     private Map<String, Object> dataMap(Object... keyValuePairs) {
