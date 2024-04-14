@@ -3,6 +3,7 @@ package org.example.BankBridge.Controllers.Admin;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import org.example.BankBridge.Models.Model;
+import org.example.BankBridge.Views.AdminMenuOptions;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,7 +23,7 @@ public class AdminMenuController implements Initializable {
 
     private void onCreateClient()
     {
-        Model.getInstance().getViewFactory().getAdminSelectedMenuItem().set("CreateClient");
+        Model.getInstance().getViewFactory().getAdminSelectedMenuItem().set(AdminMenuOptions.CREATE_CLIENT);
     }
 
 }
