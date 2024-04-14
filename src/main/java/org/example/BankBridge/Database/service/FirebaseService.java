@@ -125,7 +125,7 @@ public class FirebaseService {
         return listOfAccounts;
     }
 
-    private String retrievePersonByUuidAndReturnPass(String uuid) {
+    public String retrievePersonByUuidAndReturnPass(String uuid) {
         //asynchronously retrieve all documents
         ApiFuture<QuerySnapshot> future =  App.fstore.collection("users").get();
         // future.get() blocks on response
