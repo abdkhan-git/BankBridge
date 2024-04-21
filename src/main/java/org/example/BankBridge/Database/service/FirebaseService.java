@@ -69,6 +69,32 @@ public class FirebaseService {
         ApiFuture<WriteResult> result = docRef.set(accountData);
     }
 
+    public boolean updateAccountWithNewBalance(String accNumber, double balance) {
+        ApiFuture<QuerySnapshot> future =  App.fstore.collection("account").get();
+        List<QueryDocumentSnapshot> documents;
+        try
+        {
+            documents = future.get().getDocuments();
+            if(!documents.isEmpty()) {
+                System.out.println("Fetching data from firebase database..");
+                for (QueryDocumentSnapshot document : documents) {
+                    if (document.getData().get("account_number").equals(accNumber)) {
+                        System.out.println("SUCCESS: Found account with corresponding account_number");
+                        DocumentReference docRef = document.getReference();
+                        docRef.update("balance", balance).get(); // Update balance field
+                        return true;
+                    }
+                }
+            } else {
+                System.out.println("No data");
+            }
+        }
+        catch (InterruptedException | ExecutionException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     public List<User> retrieveAllRegisteredUsers() {
         List<User> listOfRegisteredUsers = new ArrayList<>();
 
