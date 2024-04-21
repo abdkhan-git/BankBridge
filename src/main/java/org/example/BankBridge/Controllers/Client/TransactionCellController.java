@@ -16,7 +16,7 @@ public class TransactionCellController implements Initializable {
     public Label receiver_lbl;
     public Label amount_lbl;
 
-    //Transaction cell code
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
