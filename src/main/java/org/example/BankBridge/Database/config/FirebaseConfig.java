@@ -15,7 +15,7 @@ import java.io.FileInputStream;
 public class FirebaseConfig {
     public Firestore initialize() {
         try {
-            FileInputStream serviceAccount = new FileInputStream("src/main/resources/key.json");
+            FileInputStream serviceAccount = new FileInputStream("src/main/resources/org/example/BankBridge/key.json");
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
