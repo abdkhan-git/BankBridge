@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import org.example.BankBridge.App;
 import org.example.BankBridge.Database.service.FirebaseService;
 
 import java.net.URL;
@@ -25,7 +26,6 @@ public class AccountsController implements Initializable {
     public Button trans_to_sv_btn;
     public TextField amount_to_ch;
     public Button trans_to_ch_btn;
-    private final FirebaseService firebaseService = new FirebaseService();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {}
@@ -33,13 +33,13 @@ public class AccountsController implements Initializable {
     @FXML
     public void transferToSavingsAccountBtnOnClick(ActionEvent event) {
         double amount = Double.parseDouble(amount_to_sv.getText());
-        firebaseService.updateAccountWithNewBalance(sv_acc_num.getText(), amount);
+        App.firebaseService.updateAccountWithNewBalance(sv_acc_num.getText(), amount);
     }
 
     @FXML
     public void transferToCheckingsAccountBtnOnClick(ActionEvent event) {
         double amount = Double.parseDouble(amount_to_ch.getText());
-        firebaseService.updateAccountWithNewBalance(ch_acc_num.getText(), amount);
+        App.firebaseService.updateAccountWithNewBalance(ch_acc_num.getText(), amount);
     }
 
 }
