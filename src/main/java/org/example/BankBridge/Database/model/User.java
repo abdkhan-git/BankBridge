@@ -5,6 +5,7 @@ public record User(String firstName,
                    String email,
                    String phoneNum,
                    String password,
-                   String accountType) {
+                   String accountType,
+                   String userAddress) {
 
 }
