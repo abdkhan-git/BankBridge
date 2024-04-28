@@ -109,7 +109,8 @@ public class FirebaseService {
                                 String.valueOf(document.get("email")),
                                 String.valueOf(document.get("phone_num")),
                                 String.valueOf(document.get("password")),
-                                String.valueOf(document.get("account_type"))
+                                String.valueOf(document.get("account_type")),
+                                String.valueOf(document.get("user_address"))
                         ))
                         .forEach(listOfRegisteredUsers::add);
             }
