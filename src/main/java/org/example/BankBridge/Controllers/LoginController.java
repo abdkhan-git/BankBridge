@@ -1,5 +1,7 @@
 package org.example.BankBridge.Controllers;
 
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -7,6 +9,8 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.example.BankBridge.App;
+import org.example.BankBridge.Database.service.FirebaseService;
 import org.example.BankBridge.Models.Model;
 import org.example.BankBridge.Views.AccountType;
 
@@ -39,5 +43,25 @@ public class LoginController implements Initializable {
        else{
            Model.getInstance().getViewFactory().showAdminWindow();
        }
+    }
+
+    public void login() {
+        String email = user_address_lbl.getText();
+        String password = password_fld.getText();
+
+        try {
+            UserRecord user = App.fauth.getUserByEmail(email);
+            if (user != null) {
+                String uuid = user.getUid();
+                if (password.equals(App.firebaseService.retrievePersonByUuidAndReturnPass(uuid))) {
+                    // switch screens
+                } else {
+                    System.out.println("ERROR: Invalid password.");
+                }
+            }
+        } catch (FirebaseAuthException e) {
+            System.out.println("ERROR: Could not sign in.");
+        }
+
     }
 }

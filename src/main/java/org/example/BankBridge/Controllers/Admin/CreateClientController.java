@@ -6,9 +6,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import org.example.BankBridge.App;
 import org.example.BankBridge.Database.model.Account;
 import org.example.BankBridge.Database.model.User;
-import org.example.BankBridge.Database.service.FirebaseService;
 
 import java.time.LocalDate;
 
@@ -25,21 +25,22 @@ public class CreateClientController {
     public Label error_lbl;
     public Button createclient_btn;
 
-    private final FirebaseService firebaseService = new FirebaseService();
-
     @FXML
     public void createClientBtnOnClick(ActionEvent e) {
         String accountType = ch_acc_box.isSelected() ? "Checking Account" : "Savings Account";
+        String pAddress = pAddress_box.isSelected() ? pAddress_lbl.getText() : "";
+
         User user = new User(fName_fld.getText(),
                 lName_fld.getText(),
                 "placeholderEmail",
                 "placeholderPhoneNum",
                 password_fld.getText(),
-                accountType);
+                accountType,
+                pAddress);
 
-        firebaseService.registerUser(user);
+        App.firebaseService.registerUser(user);
 
         Account acc = new Account("128 409 613", accountType, 0.0, LocalDate.now().toString());
-        firebaseService.addNewBankAccountToDb(acc);
+        App.firebaseService.addNewBankAccountToDb(acc);
     }
 }
