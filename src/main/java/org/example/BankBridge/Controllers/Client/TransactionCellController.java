@@ -3,7 +3,7 @@ package org.example.BankBridge.Controllers.Client;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import org.example.BankBridge.Models.Transcation;
+import org.example.BankBridge.Models.Transaction;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -17,9 +17,9 @@ public class TransactionCellController implements Initializable {
     public Label receiver_lbl;
     public Label amount_lbl;
 
-    private final Transcation transaction;
+    private final Transaction transaction;
 
-    public TransactionCellController(Transcation transaction) {
+    public TransactionCellController(Transaction transaction) {
         this.transaction = transaction;
     }
 
