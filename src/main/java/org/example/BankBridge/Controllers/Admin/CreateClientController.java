@@ -1,18 +1,18 @@
 package org.example.BankBridge.Controllers.Admin;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import org.example.BankBridge.App;
-import org.example.BankBridge.Database.model.Account;
-import org.example.BankBridge.Database.model.User;
+import org.example.BankBridge.Models.Model;
+import org.example.BankBridge.Views.AccountType;
 
-import java.time.LocalDate;
+import java.net.URL;
+import java.util.Random;
+import java.util.ResourceBundle;
 
-public class CreateClientController {
+public class CreateClientController implements Initializable {
     public TextField fName_fld;
     public TextField lName_fld;
     public TextField password_fld;
@@ -25,22 +25,22 @@ public class CreateClientController {
     public Label error_lbl;
     public Button createclient_btn;
 
-    @FXML
-    public void createClientBtnOnClick(ActionEvent e) {
-        String accountType = ch_acc_box.isSelected() ? "Checking Account" : "Savings Account";
-        String pAddress = pAddress_box.isSelected() ? pAddress_lbl.getText() : "";
+    private String payeeAddress;
 
-        User user = new User(fName_fld.getText(),
-                lName_fld.getText(),
-                "placeholderEmail",
-                "placeholderPhoneNum",
-                password_fld.getText(),
-                accountType,
-                pAddress);
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        App.firebaseService.registerUser(user);
+    }
 
-        Account acc = new Account("128 409 613", accountType, 0.0, LocalDate.now().toString());
-        App.firebaseService.addNewBankAccountToDb(acc);
+    private void createCheckingAccount(){
+        double balance = Double.parseDouble(ch_amount_fld.getText());
+        //Generate Account Number
+
+        String firstSection = "3201";
+        String lastSection = Integer.toString((new Random()).nextInt(9999)+1000);
+        String accountNumber = firstSection + " " + lastSection;
+        //Create the Checking number
+        // creating this later
+    // Model.getInstance().getDatabaseDriver.createCheckingAccount(payeeAddress, accountNumber, /* Transaction Limit*/10, balance);
     }
 }
