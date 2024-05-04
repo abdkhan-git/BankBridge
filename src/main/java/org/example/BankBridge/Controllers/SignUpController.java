@@ -9,6 +9,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.BankBridge.App;
+import org.example.BankBridge.Database.model.User;
 import org.example.BankBridge.Models.Client;
 import org.example.BankBridge.Models.Model;
 import org.example.BankBridge.Views.AccountType;
@@ -23,6 +24,8 @@ public class SignUpController {
         String email = tfEmailAddress.getText();
         String pass = tfPassword.getText();
 
+        User user = new User(email, pass);
+
         UserRecord.CreateRequest request = new UserRecord.CreateRequest()
                 .setEmail(email)
                 .setPassword(pass)
@@ -31,6 +34,7 @@ public class SignUpController {
         UserRecord record;
         try {
             record = App.fauth.createUser(request);
+            App.firebaseService.addNewUserToDb(user, record.getUid());
             changeToLoginWindowScene();
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
