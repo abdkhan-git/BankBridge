@@ -7,8 +7,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import org.example.BankBridge.App;
 import org.example.BankBridge.Models.Client;
+import org.example.BankBridge.Models.Model;
+import org.example.BankBridge.Views.AccountType;
 
 public class SignUpController {
     public TextField tfEmailAddress;
@@ -28,8 +31,15 @@ public class SignUpController {
         UserRecord record;
         try {
             record = App.fauth.createUser(request);
+            changeToLoginWindowScene();
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
         }
+    }
+
+    public void changeToLoginWindowScene() {
+        Stage stage = (Stage) tfEmailAddress.getScene().getWindow();
+        Model.getInstance().getViewFactory().closeStage(stage);
+        Model.getInstance().getViewFactory().showLoginWindow();
     }
 }
