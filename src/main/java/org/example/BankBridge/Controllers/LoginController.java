@@ -36,14 +36,13 @@ public class LoginController implements Initializable {
 
     @FXML
     public void onLoginBtnClick() {
-        String email = user_address_lbl.getText();
+        String email = user_address_fld.getText();
         String password = password_fld.getText();
 
         try {
             UserRecord user = App.fauth.getUserByEmail(email);
             if (user != null) {
-                String uuid = user.getUid();
-                if (password.equals(App.firebaseService.retrievePersonByUuidAndReturnPass(uuid))) {
+                if (password.equals(App.firebaseService.retrievePersonByEmailAndReturnPass(email))) {
                     // switch screens
                     changeScene();
                 } else {
@@ -51,7 +50,7 @@ public class LoginController implements Initializable {
                 }
             }
         } catch (FirebaseAuthException e) {
-            System.out.println("ERROR: Could not sign in.");
+            System.out.println("ERROR: Could not sign in. Email may be incorrect.");
         }
     }
 
