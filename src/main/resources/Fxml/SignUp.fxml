@@ -36,5 +36,11 @@
          </font>
       </Button>
       <PasswordField fx:id="tfPassword" layoutX="286.0" layoutY="187.0" prefHeight="26.0" prefWidth="227.0" />
+      <Button fx:id="btnSkipToLogin" layoutX="338.0" layoutY="335.0" mnemonicParsing="false" onAction="#skipToLoginBtnOnClick" prefHeight="26.0" prefWidth="118.0" style="-fx-background-color: #152238;" text="Skip to login" textFill="WHITE">
+         <font>
+            <Font name="Apple Braille Outline 6 Dot" size="16.0" />
+         </font>
+      </Button>
+      <Label layoutX="330.0" layoutY="310.0" text="For testing purposes only:" />
    </children>
 </AnchorPane>

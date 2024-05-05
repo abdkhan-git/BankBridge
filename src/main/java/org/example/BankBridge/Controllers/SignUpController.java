@@ -18,6 +18,7 @@ public class SignUpController {
     public TextField tfEmailAddress;
     public PasswordField tfPassword;
     public Button btnRegister;
+    public Button btnSkipToLogin;
 
     @FXML
     public void registerBtnOnClick(ActionEvent event) {
@@ -39,6 +40,11 @@ public class SignUpController {
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void skipToLoginBtnOnClick(ActionEvent actionEvent) {
+        changeToLoginWindowScene();
     }
 
     public void changeToLoginWindowScene() {
