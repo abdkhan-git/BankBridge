@@ -33,13 +33,13 @@ public class AccountsController implements Initializable {
     @FXML
     public void transferToSavingsAccountBtnOnClick(ActionEvent event) {
         double amount = Double.parseDouble(amount_to_sv.getText());
-        App.firebaseService.updateAccountWithNewBalance(sv_acc_num.getText(), amount);
+//        App.firebaseService.updateAccountWithNewBalance(sv_acc_num.getText(), amount);
     }
 
     @FXML
     public void transferToCheckingsAccountBtnOnClick(ActionEvent event) {
         double amount = Double.parseDouble(amount_to_ch.getText());
-        App.firebaseService.updateAccountWithNewBalance(ch_acc_num.getText(), amount);
+//        App.firebaseService.updateAccountWithNewBalance(ch_acc_num.getText(), amount);
     }
 
 }

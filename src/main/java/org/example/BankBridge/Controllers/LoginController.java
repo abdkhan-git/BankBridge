@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.BankBridge.App;
 import org.example.BankBridge.Database.service.FirebaseService;
+import org.example.BankBridge.Models.Client;
 import org.example.BankBridge.Models.Model;
 import org.example.BankBridge.Views.AccountType;
 
@@ -36,22 +37,30 @@ public class LoginController implements Initializable {
 
     @FXML
     public void onLoginBtnClick() {
-        String email = user_address_fld.getText();
+        String address = user_address_fld.getText();
         String password = password_fld.getText();
-
-        try {
-            UserRecord user = App.fauth.getUserByEmail(email);
-            if (user != null) {
-                if (password.equals(App.firebaseService.retrievePersonByEmailAndReturnPass(email))) {
-                    // switch screens
-                    changeScene();
-                } else {
-                    System.out.println("ERROR: Invalid password.");
+        if (acc_selector.getValue() == AccountType.CLIENT) {
+            // search thru DB for user address
+            // then login, but we need to propagate this data to next screen
+            Client client = App.firebaseService.findClientByUserAddress(address);
+            changeScene();
+        } else if (acc_selector.getValue() == AccountType.ADMIN) {
+            try {
+                UserRecord user = App.fauth.getUserByEmail(address);
+                if (user != null) {
+                    if (password.equals(App.firebaseService.retrievePersonByEmailAndReturnPass(address))) {
+                        // switch screens
+                        changeScene();
+                    } else {
+                        System.out.println("ERROR: Invalid password.");
+                    }
                 }
+            } catch (FirebaseAuthException e) {
+                System.out.println("ERROR: Could not sign in. Email may be incorrect.");
             }
-        } catch (FirebaseAuthException e) {
-            System.out.println("ERROR: Could not sign in. Email may be incorrect.");
         }
+
+
     }
 
     private void changeScene(){
