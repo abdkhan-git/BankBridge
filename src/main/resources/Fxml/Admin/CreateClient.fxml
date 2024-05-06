@@ -35,7 +35,7 @@
                 text="Add Savings Account"/>
       <Text layoutX="10.0" layoutY="232.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Saving Account Balance:"/>
       <TextField fx:id="sv_amount_fld" layoutX="10.0" layoutY="233.0"/>
-      <Button fx:id="createclient_btn" mnemonicParsing="false" text="Create New Client"/>
+      <Button fx:id="createclient_btn" mnemonicParsing="false" text="Create New Client" onAction="#createNewClientBtnOnClick"/>
       <Label fx:id="error_lbl" styleClass="error_lbl" text="error:"/>
    </VBox>
 </AnchorPane>

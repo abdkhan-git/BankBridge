@@ -3,6 +3,7 @@ package org.example.BankBridge.Controllers;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -11,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.BankBridge.App;
 import org.example.BankBridge.Database.service.FirebaseService;
+import org.example.BankBridge.Models.Client;
 import org.example.BankBridge.Models.Model;
 import org.example.BankBridge.Views.AccountType;
 
@@ -31,37 +33,44 @@ public class LoginController implements Initializable {
         acc_selector.setItems(FXCollections.observableArrayList(AccountType.CLIENT, AccountType.ADMIN));
         acc_selector.setValue(Model.getInstance().getViewFactory().getLoginAccountType());
         acc_selector.valueProperty().addListener(observable -> Model.getInstance().getViewFactory().setLoginAccountType(acc_selector.getValue()));
-        login_btn.setOnAction(event -> onLogin());
     }
 
-    private void onLogin(){
-        Stage stage = (Stage) error_lbl.getScene().getWindow();
-        Model.getInstance().getViewFactory().closeStage(stage);
-       if(Model.getInstance().getViewFactory().getLoginAccountType()==AccountType.CLIENT){
-           Model.getInstance().getViewFactory().showClientWindow();
-       }
-       else{
-           Model.getInstance().getViewFactory().showAdminWindow();
-       }
-    }
-
-    public void login() {
-        String email = user_address_lbl.getText();
+    @FXML
+    public void onLoginBtnClick() {
+        String address = user_address_fld.getText();
         String password = password_fld.getText();
-
-        try {
-            UserRecord user = App.fauth.getUserByEmail(email);
-            if (user != null) {
-                String uuid = user.getUid();
-                if (password.equals(App.firebaseService.retrievePersonByUuidAndReturnPass(uuid))) {
-                    // switch screens
-                } else {
-                    System.out.println("ERROR: Invalid password.");
+        if (acc_selector.getValue() == AccountType.CLIENT) {
+            // search thru DB for user address
+            // then login, but we need to propagate this data to next screen
+            Client client = App.firebaseService.findClientByUserAddress(address);
+            changeScene();
+        } else if (acc_selector.getValue() == AccountType.ADMIN) {
+            try {
+                UserRecord user = App.fauth.getUserByEmail(address);
+                if (user != null) {
+                    if (password.equals(App.firebaseService.retrievePersonByEmailAndReturnPass(address))) {
+                        // switch screens
+                        changeScene();
+                    } else {
+                        System.out.println("ERROR: Invalid password.");
+                    }
                 }
+            } catch (FirebaseAuthException e) {
+                System.out.println("ERROR: Could not sign in. Email may be incorrect.");
             }
-        } catch (FirebaseAuthException e) {
-            System.out.println("ERROR: Could not sign in.");
         }
 
+
+    }
+
+    private void changeScene(){
+        Stage stage = (Stage) error_lbl.getScene().getWindow();
+        Model.getInstance().getViewFactory().closeStage(stage);
+        if(Model.getInstance().getViewFactory().getLoginAccountType()==AccountType.CLIENT){
+            Model.getInstance().getViewFactory().showClientWindow();
+        }
+        else{
+            Model.getInstance().getViewFactory().showAdminWindow();
+        }
     }
 }

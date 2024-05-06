@@ -2,6 +2,7 @@ package org.example.BankBridge.Controllers.Client;
 
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 import org.example.BankBridge.Models.Model;
 import org.example.BankBridge.Views.ClientMenuOptions;
 
@@ -25,6 +26,7 @@ public class ClientMenuController implements Initializable {
         dashboardBtn.setOnAction(event -> onDashboard());
         transactionBtn.setOnAction(event -> onTransactions());
         accountsBtn.setOnAction(event -> onAccounts());
+        logoutBtn.setOnAction(event -> onLogout());
     }
 
     private void onDashboard() {
@@ -39,5 +41,17 @@ public class ClientMenuController implements Initializable {
         Model.getInstance().getViewFactory().getClientSelectedMenuItem().set(ClientMenuOptions.ACCOUNTS);
     }
 
+    private void onLogout() {
+        // Get Stage
 
+        Stage stage = (Stage) dashboardBtn.getScene().getWindow();
+        // Close the Client Window
+        Model.getInstance().getViewFactory().closeStage(stage);
+        // Show Login Window
+        Model.getInstance().getViewFactory().showLoginWindow();
+        //Set Client Login Success Flag to False (do this later)
+        //Model.getInstance().setClientLoginSuccessFlag(false);
+
+
+    }
 }
