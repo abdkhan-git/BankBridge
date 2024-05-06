@@ -49,7 +49,7 @@
          <FontAwesomeIconView fill="WHITE" glyphName="ARROW_DOWN" size="20"/>
       </graphic>
    </Button>
-   <Text layoutX="464.0" layoutY="369.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Move Funds To Savings Account"
+   <Text layoutX="464.0" layoutY="369.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Move Funds To Checking Account"
          AnchorPane.rightAnchor="164.0" AnchorPane.topAnchor="364.0"/>
    <TextField fx:id="amount_to_ch" layoutX="469.0" layoutY="400.0" prefHeight="26.0" prefWidth="221.0"
               AnchorPane.rightAnchor="164.0" AnchorPane.topAnchor="392.0"/>

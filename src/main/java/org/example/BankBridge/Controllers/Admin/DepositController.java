@@ -26,6 +26,6 @@ public class DepositController implements Initializable {
 
     @FXML
     public void depositBtnOnClick(ActionEvent event) {
-        App.firebaseService.updateAccountWithNewBalance(pAddress_fld.getText(), Double.parseDouble(amount_fld.getText()));
+//        App.firebaseService.updateAccountWithNewBalance(pAddress_fld.getText(), Double.parseDouble(amount_fld.getText()));
     }
 }
