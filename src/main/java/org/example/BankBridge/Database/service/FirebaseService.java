@@ -1,53 +1,33 @@
 package org.example.BankBridge.Database.service;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
-import com.google.cloud.firestore.WriteResult;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
+import com.google.cloud.firestore.*;
 import org.example.BankBridge.App;
-import org.example.BankBridge.Database.model.Account;
 import org.example.BankBridge.Database.model.User;
+import org.example.BankBridge.Models.CheckingAccount;
+import org.example.BankBridge.Models.Client;
+import org.example.BankBridge.Models.SavingsAccount;
+import org.w3c.dom.Document;
+
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Contains necessary database (CRUD) operations
  */
 public class FirebaseService {
-
-    public boolean registerUser(User user) {
-        // Create user request with only email/phone num for authentication
-        UserRecord.CreateRequest request = new UserRecord.CreateRequest()
-                .setEmail(user.email())
-                .setPhoneNumber(user.phoneNum())
-                .setDisabled(false);
-
-        UserRecord record;
-        try {
-            record = App.fauth.createUser(request);
-            addNewUserToDb(user, record.getUid());
-            return true;
-        } catch (FirebaseAuthException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+    private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
     public void addNewUserToDb(User user, String uuid) {
         DocumentReference docRef = App.fstore.collection("users").document(UUID.randomUUID().toString());
 
         Map<String, Object> userData = dataMap(
-                "account_type", "CLIENT",
                 "uuid", uuid,
-                "first_name", user.firstName(),
-                "last_name", user.lastName(),
                 "email", user.email(),
-                "phone_num", user.phoneNum(),
                 "password", user.password()
         );
 
@@ -55,42 +35,161 @@ public class FirebaseService {
         ApiFuture<WriteResult> result = docRef.set(userData);
     }
 
-    public void addNewBankAccountToDb(Account account) {
-        DocumentReference docRef = App.fstore.collection("accounts").document(UUID.randomUUID().toString());
-
-        Map<String, Object> accountData = dataMap(
-                "account_type", "CHECKING",
-                "account_number", account.accountNumber(),
-                "balance", account.balance(),
-                "date_created", account.dateCreated()
-        );
-
-        //asynchronously write data
-        ApiFuture<WriteResult> result = docRef.set(accountData);
-    }
-
-    public boolean updateAccountWithNewBalance(String address, double balance) {
-        ApiFuture<QuerySnapshot> future =  App.fstore.collection("account").get();
+    public Client findClientByUserAddress(String userAddress) {
+        Client client =  new Client("", "", "", "", "", LocalDate.now());
+        ApiFuture<QuerySnapshot> future =  App.fstore.collection("clients").get();
         List<QueryDocumentSnapshot> documents;
         try {
             documents = future.get().getDocuments();
-            if(!documents.isEmpty()) {
+            if (!documents.isEmpty()) {
                 System.out.println("Fetching data from firebase database..");
                 for (QueryDocumentSnapshot document : documents) {
-                    if (document.getData().get("user_address").equals(address)) {
+                    if (document.getData().get("userAddress").equals(userAddress)) {
                         System.out.println("SUCCESS: Found account with corresponding user address");
-                        DocumentReference docRef = document.getReference();
-                        docRef.update("balance", balance).get(); // Update balance field
-                        return true;
+                        client = new Client(
+                                document.getString("firstName"),
+                                document.getString("lastName"),
+                                document.getString("userAddress"),
+                                document.getString("checkingAccountIDReference"),
+                                document.getString("savingsAccountIDReference"),
+                                LocalDate.parse(document.getString("dateCreated"))
+                        );
                     }
                 }
             } else {
-                System.out.println("No data");
+                System.out.println("No client with specified address found.");
             }
         } catch (InterruptedException | ExecutionException ex) {
             ex.printStackTrace();
         }
+        return client;
+    }
+
+    public void addNewClientToDb(Client client) {
+        DocumentReference docRef = App.fstore.collection("clients").document(UUID.randomUUID().toString());
+
+        Map<String, Object> clientData = dataMap(
+                "firstName", client.firstNameProperty().get(),
+                "lastName", client.lastNameProperty().get(),
+                "userAddress", client.uAddressProperty().get(),
+                "checkingAccountIDReference", client.checkingAccountProperty().get(),
+                "savingsAccountIDReference", client.savingsAccountProperty().get(),
+                "dateCreated", client.dateProperty().getValue().toString()
+        );
+
+        //asynchronously write data
+        ApiFuture<WriteResult> result = docRef.set(clientData);
+    }
+
+    public String addNewCheckingAccountToDb(CheckingAccount account) {
+        DocumentReference docRef = App.fstore.collection("checking-accounts").document(UUID.randomUUID().toString());
+
+        Map<String, Object> accountData = dataMap(
+                "account_type", "CHECKING",
+                "owner", account.ownerProperty().get(),
+                "account_number", account.accountNumberProperty().get(),
+                "balance", account.balanceProperty().get(),
+                "transaction_limit", account.transactionLimitProperty().get()
+        );
+
+        //asynchronously write data
+        ApiFuture<WriteResult> result = docRef.set(accountData);
+        return docRef.getId();
+    }
+
+    public String addNewSavingsAccountToDb(SavingsAccount account) {
+        DocumentReference docRef = App.fstore.collection("savings-accounts").document(UUID.randomUUID().toString());
+
+        Map<String, Object> accountData = dataMap(
+                "account_type", "SAVINGS",
+                "owner", account.ownerProperty().get(),
+                "account_number", account.accountNumberProperty().get(),
+                "balance", account.balanceProperty().get(),
+                "withdrawal_limit", account.withdrawalLimitProperty().get()
+        );
+
+        //asynchronously write data
+        ApiFuture<WriteResult> result = docRef.set(accountData);
+        return docRef.getId();
+    }
+
+//    public boolean findClientByUserAddressAndSendMoney(String address, double moneyToSend) {
+//        ApiFuture<QuerySnapshot> future =  App.fstore.collection("clients").get();
+//        List<QueryDocumentSnapshot> documents;
+//        try {
+//            documents = future.get().getDocuments();
+//            if(!documents.isEmpty()) {
+//                System.out.println("Fetching data from firebase database..");
+//                for (QueryDocumentSnapshot document : documents) {
+//                    if (document.getData().get("userAddress").equals(address)) {
+//                        System.out.println("SUCCESS: Found account with corresponding user address");
+//                        String checkingAccountRefId = document.getData().get("checkingAccountIDReference").toString();
+//                        if (!checkingAccountRefId.equals("N/A")) {
+//                            double currBalance = Double.parseDouble(
+//                                    App.fstore.collection("checking-accounts")
+//                                            .document(checkingAccountRefId)
+//                                            .get()
+//                                            .get()
+//                                            .get("balance")
+//                                            .toString()
+//                            );
+//                            double newBalance = currBalance + moneyToSend;
+//                            DocumentReference accDocRef = App.fstore.collection("checking-accounts").document(checkingAccountRefId);
+//                            accDocRef.update("balance", newBalance);
+//                            return true;
+//                        }
+//                    }
+//                }
+//            } else {
+//                System.out.println("No data");
+//            }
+//        } catch (InterruptedException | ExecutionException ex) {
+//            ex.printStackTrace();
+//        }
+//        return false;
+//    }
+
+    public boolean findClientByUserAddressAndSendMoney(String address, double moneyToSend) {
+        Firestore db = App.fstore;
+
+        List<QueryDocumentSnapshot> documents = getClientDocuments(db);
+        if (documents != null && !documents.isEmpty()) {
+            for (QueryDocumentSnapshot document : documents) {
+                if (document.getData().containsKey("userAddress") && document.getString("userAddress").equals(address)) {
+                    LOGGER.info("Found account with corresponding user address: " + address);
+                    String checkingAccountRefId = document.getString("checkingAccountIDReference");
+                    if (checkingAccountRefId != null && !checkingAccountRefId.equals("N/A")) {
+                        updateCheckingAccountBalance(db, checkingAccountRefId, moneyToSend);
+                        return true;
+                    }
+                }
+            }
+        } else {
+            LOGGER.warning("No client documents found");
+        }
         return false;
+    }
+
+    private List<QueryDocumentSnapshot> getClientDocuments(Firestore db) {
+        try {
+            ApiFuture<QuerySnapshot> future = db.collection("clients").get();
+            return future.get().getDocuments();
+        } catch (InterruptedException | ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, "Error fetching client documents", ex);
+            return null;
+        }
+    }
+
+    private void updateCheckingAccountBalance(Firestore db, String checkingAccountRefId, double moneyToSend) {
+        try {
+            DocumentReference accDocRef = db.collection("checking-accounts").document(checkingAccountRefId);
+            double currBalance = accDocRef.get().get().getDouble("balance");
+            double newBalance = currBalance + moneyToSend;
+            accDocRef.update("balance", newBalance);
+            LOGGER.info("Balance updated successfully");
+        } catch (InterruptedException | ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, "Error updating balance", ex);
+        }
     }
 
     public List<User> retrieveAllRegisteredUsers() {
@@ -104,13 +203,8 @@ public class FirebaseService {
             if(!documents.isEmpty()) {
                 documents.stream()
                         .map(document -> new User(
-                                String.valueOf(document.get("first_name")),
-                                String.valueOf(document.get("last_name")),
                                 String.valueOf(document.get("email")),
-                                String.valueOf(document.get("phone_num")),
-                                String.valueOf(document.get("password")),
-                                String.valueOf(document.get("account_type")),
-                                String.valueOf(document.get("user_address"))
+                                String.valueOf(document.get("password"))
                         ))
                         .forEach(listOfRegisteredUsers::add);
             }
@@ -123,46 +217,45 @@ public class FirebaseService {
         return listOfRegisteredUsers;
     }
 
-    public List<Account> retrieveAllBankAccounts() {
-        List<Account> listOfAccounts = new ArrayList<>();
+//    public List<Account> retrieveAllBankAccounts() {
+//        List<Account> listOfAccounts = new ArrayList<>();
+//
+//        ApiFuture<QuerySnapshot> future =  App.fstore.collection("accounts").get();
+//        List<QueryDocumentSnapshot> documents;
+//
+//        try {
+//            documents = future.get().getDocuments();
+//            if(!documents.isEmpty()) {
+//                documents.stream()
+//                        .map(document -> new Account(
+//                                String.valueOf(document.get("account_number")),
+//                                String.valueOf(document.get("account_type")),
+//                                Double.parseDouble(String.valueOf(document.get("balance"))),
+//                                String.valueOf(document.get("date_created"))
+//                        ))
+//                        .forEach(listOfAccounts::add);
+//            }
+//            else {
+//                System.out.println("No bank accounts found within database.");
+//            }
+//        } catch (InterruptedException | ExecutionException ex) {
+//            ex.printStackTrace();
+//        }
+//        return listOfAccounts;
+//    }
 
-        ApiFuture<QuerySnapshot> future =  App.fstore.collection("accounts").get();
-        List<QueryDocumentSnapshot> documents;
-
-        try {
-            documents = future.get().getDocuments();
-            if(!documents.isEmpty()) {
-                documents.stream()
-                        .map(document -> new Account(
-                                String.valueOf(document.get("account_number")),
-                                String.valueOf(document.get("account_type")),
-                                Double.parseDouble(String.valueOf(document.get("balance"))),
-                                String.valueOf(document.get("date_created"))
-                        ))
-                        .forEach(listOfAccounts::add);
-            }
-            else {
-                System.out.println("No bank accounts found within database.");
-            }
-        } catch (InterruptedException | ExecutionException ex) {
-            ex.printStackTrace();
-        }
-        return listOfAccounts;
-    }
-
-    public String retrievePersonByUuidAndReturnPass(String uuid) {
+    public String retrievePersonByEmailAndReturnPass(String email) {
         //asynchronously retrieve all documents
         ApiFuture<QuerySnapshot> future =  App.fstore.collection("users").get();
         // future.get() blocks on response
         List<QueryDocumentSnapshot> documents;
-        try
-        {
+        try {
             documents = future.get().getDocuments();
-            if(!documents.isEmpty()) {
+            if (!documents.isEmpty()) {
                 System.out.println("Fetching data from firebase database..");
                 for (QueryDocumentSnapshot document : documents) {
-                    if (document.getData().get("uuid").equals(uuid)) {
-                        System.out.println("SUCCESS: Found person with corresponding UUID");
+                    if (document.getData().get("email").equals(email)) {
+                        System.out.println("SUCCESS: Found person with corresponding email");
                         return document.getData().get("password").toString();
                     }
                 }
