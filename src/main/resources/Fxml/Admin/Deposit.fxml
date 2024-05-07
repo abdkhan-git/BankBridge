@@ -15,9 +15,9 @@
    <VBox layoutX="15.0" layoutY="90.0" prefHeight="570.0" prefWidth="820.0" AnchorPane.leftAnchor="15.0"
          AnchorPane.topAnchor="100.0">
       <HBox alignment="CENTER" prefHeight="60.0" prefWidth="820.0" styleClass="search_box">
-         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Search by Payee Address"/>
+         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Search by Payee Address" fx:id="payeeAddresslbl"/>
          <TextField fx:id="pAddress_fld"/>
-         <Button fx:id="search_btn" mnemonicParsing="false" text="Search">
+         <Button fx:id="search_btn" mnemonicParsing="false" text="Search" onAction="#searchBtnOnClick">
             <graphic>
                <FontAwesomeIconView fill="WHITE" glyphName="SEARCH" size="20"/>
             </graphic>
@@ -28,7 +28,7 @@
          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Deposit Section"/>
          <Text layoutX="379.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amount:"/>
          <TextField fx:id="amount_fld"/>
-         <Button fx:id="deposit_btn" mnemonicParsing="false" text="Deposit">
+         <Button fx:id="deposit_btn" mnemonicParsing="false" text="Deposit" onAction="#depositBtnOnClick">
             <graphic>
                <FontAwesomeIconView fill="WHITE" glyphName="MONEY" size="20"/>
             </graphic>
