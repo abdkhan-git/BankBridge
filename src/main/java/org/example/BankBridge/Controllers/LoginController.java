@@ -40,9 +40,7 @@ public class LoginController implements Initializable {
         String address = user_address_fld.getText();
         String password = password_fld.getText();
         if (acc_selector.getValue() == AccountType.CLIENT) {
-            // search thru DB for user address
-            // then login, but we need to propagate this data to next screen
-            Client client = App.firebaseService.findClientByUserAddress(address);
+            App.firebaseService.findClientByUserAddress(address);
             changeScene();
         } else if (acc_selector.getValue() == AccountType.ADMIN) {
             try {

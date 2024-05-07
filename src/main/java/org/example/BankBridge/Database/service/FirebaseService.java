@@ -65,6 +65,29 @@ public class FirebaseService {
         return client;
     }
 
+    public boolean findClientByUserAddressBool(String userAddress) {
+        Client client =  new Client("", "", "", "", "", LocalDate.now());
+        ApiFuture<QuerySnapshot> future =  App.fstore.collection("clients").get();
+        List<QueryDocumentSnapshot> documents;
+        try {
+            documents = future.get().getDocuments();
+            if (!documents.isEmpty()) {
+                System.out.println("Fetching data from firebase database..");
+                for (QueryDocumentSnapshot document : documents) {
+                    if (document.getData().get("userAddress").equals(userAddress)) {
+                        System.out.println("SUCCESS: Found account with corresponding user address");
+                        return true;
+                    }
+                }
+            } else {
+                System.out.println("No client with specified address found.");
+            }
+        } catch (InterruptedException | ExecutionException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     public void addNewClientToDb(Client client) {
         DocumentReference docRef = App.fstore.collection("clients").document(UUID.randomUUID().toString());
 
