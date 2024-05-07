@@ -40,7 +40,7 @@ public class LoginController implements Initializable {
         String address = user_address_fld.getText();
         String password = password_fld.getText();
         if (acc_selector.getValue() == AccountType.CLIENT) {
-            Client client = App.firebaseService.findClientByUserAddress(address);
+            App.firebaseService.findClientByUserAddress(address);
             changeScene();
         } else if (acc_selector.getValue() == AccountType.ADMIN) {
             try {
@@ -57,6 +57,8 @@ public class LoginController implements Initializable {
                 System.out.println("ERROR: Could not sign in. Email may be incorrect.");
             }
         }
+
+
     }
 
     private void changeScene(){
